@@ -59,6 +59,28 @@ app.post('/account', (req, res) => {
     return res.status(201).send();
 })
 
+app.get('/account', verifyIfExistsAccountCPF, (req, res) => {
+    const { customer } = req;
+
+    return res.json(customer)
+})
+
+app.put('/account', verifyIfExistsAccountCPF, (req, res) => {
+    const { name } = req.body;
+    const { customer } = req;
+
+    customer.name = name;
+
+    return res.status(201).send()
+})
+
+app.delete('/account', verifyIfExistsAccountCPF, (req, res) => {
+    const { customer } = req;
+    
+    customers.splice(customer, 1);
+    return res.status(201).send()
+})
+
 //app.use(verifyIfExistsAccountCPF)  - aplica o middleware a todas as rotas posteriores
 app.get('/statement', verifyIfExistsAccountCPF, (req, res) => {
     //recuperando a informaçao do middleware
@@ -120,21 +142,6 @@ app.get('/statement/date', verifyIfExistsAccountCPF, (req, res) => {
     const statement = customer.statement.filter((statement) => statement.created_at.toDateString() === new Date(dateFormat).toDateString())
 
     return res.json(statement);
-})
-
-app.put('/account', verifyIfExistsAccountCPF, (req, res) => {
-    const { name } = req.body;
-    const { customer } = req;
-
-    customer.name = name;
-
-    return res.status(201).send()
-})
-
-app.get('/account', verifyIfExistsAccountCPF, (req, res) => {
-    const { customer } = req;
-
-    return res.json(customer)
 })
 
 const port = 3333;
